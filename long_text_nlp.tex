@@ -34,6 +34,8 @@
 	\end{titlepage}
 	\hypersetup{pageanchor=true}
 	
+	\tableofcontents
+	
 	\section{Introduction}
 	Understanding written text has always been an area of interest for computer research as well as commercial applications. Successfully parsing human text can be crucial for tasks traditionally necessitating lengthy human intervention, such as analyzing sentiments or extracting the underlying meaning and themes in works of literature. During the past few years, research has been pivoting away from more traditional statistical and machine learning methods in favor of emergent neural network and deep learning architectures to tackle this complicated problem. While these new methods are very promising, they face severe challenges when used in the context of very large documents such as books or scientific articles. In this paper we will examine many of these challenges, how they impact existing solutions and how recent methods in the field of NLP(Natural Language Processing) attempt to circumvent them. We will largely focus on three areas of scientific interest; Text categorization, which attempts to categorize documents into distinct classes, text summarization, which attempts to produce summaries of large documents and sentiment analysis, which attempts to identify the emotional tone behind a body of text. 
 	
@@ -95,7 +97,7 @@
 	\paragraph{Abstractive summarization} on the other hand generates its own text. This is the method humans use when trying to summarize text, by reading the source, extracting its meaning and then writing down a condensed text that encapsulates as much of that meaning as possible. Modern abstractive techniques mostly use the encoder-decoder pattern to emulate this process. Compared to extractive summarization, this method produces a more meaningful and condensed summary, and is much more adaptable to the kind of document that needs to be summarized. However, because it can no longer rely on the source text's periods as output there's a much larger risk of misrepresenting facts or not being coherent at all.
 	
 	
-	\section{Challenges}
+	\subsection{Challenges}
 	
 	Extractive models struggle particularly with long-text documents\cite{xiao}. The longer a document the more topics it typically covers, and the harder it is for a model to produce a summary effectively covering all of them.\par
 	
@@ -108,18 +110,17 @@
 	Both authors however point out the lack of long-text datasets. They use the CNN/Daily Mail dataset, which as of writing, is the only long-text dataset available. \cite{suleiman} complain that the dataset includes only highlights of new articles, resulting in many crucial points not being presented in the summary. They also mention the complete lack of datasets for many languages such as Arabic, a recurring problem mentioned above in this paper. \par
 	
 	
-	\section{Early Work}
+	\subsection{Early Work}
 	
 	The first studies concerning ATS began as early as 1958. In their paper \cite{luhn} used an extractive method to, for the first time, build a summary  of technical papers and magazine articles. In 1995 \cite{maybury} proposed a new system, SumGen, which can use domain specific knowledge from a database to enhance the summarization process. Of course, these models relied on statistical algorithms such as "Latent Semantic Analysis" (LSA) and machine learning classifiers such as SVD. It was not until the development of techniques like seq2seq learning and unsupervised language models that allowed neural networks to be applied for abstractive summarization. So far they are the only competitive models that can be applied for this kind of summarization.
 	
-	\section{Solutions}
+	\subsection{Solutions}
 	
 	\cite{lapata} are the first to use neural networks, and specifically the encoder-decoder pattern with an attention mechanism to build an extractive summarization model. 
 	
 	Their solution is succeeded by \cite{nallapati} who use "SummaRuNNer", a RNN-based sequence classifier with a training mechanism that allows it to train on abstractive summaries. More specifically, during training they take the content, salience, novelty, and position of each sentence into consideration when deciding it should be included in the extractive summary. 
 	
-	Finally, \cite{xiao} improve on the above solution by incorporating local and global context information, inspired by the hierarchical structure that most human, long documents use. More specifically, three components are used; the sentence encoder, which maps word embedding to a fixed length vector, the document encoder which uses a bi-directional RNN to encode the sentences and a decoder that produces the summary. The decoder chooses between concatenating the sentence vectors produced by the document encoder and uses an attention mechanism to assign weights to them. Their model has been proved to achieve state-of-the-art results in the known CNN/Datamail datasets and their efficiency increases  with datasets of ever increasing document length. \par
-	
+	Finally, \cite{xiao} improve on the above solution by incorporating local and global context information, inspired by the hierarchical structure that most human, long documents use. More specifically, three components are used; the sentence encoder, which maps word embedding to a fixed length vector, the document encoder which uses a bi-directional RNN to encode the sentences and a decoder that produces the summary. The decoder chooses between concatenating the sentence vectors produced by the document encoder and uses an attention mechanism to assign weights to them. Their model has been proved to achieve state-of-the-art results in the known CNN/Daily Mail datasets and their efficiency increases  with datasets of ever increasing document length. \par
 	
 	\cite{abigail} propose a new solution to the copying problem by using "pointer-generator networks". Inspired by the ability of mammals, including humans, to refer to objects they don't know by pointing at them, pointer-generator networks may choose whether to generate a word, or copy it from the source text. 
 	
@@ -127,6 +128,30 @@
 	
 	In a way, this approach combines extraction and abstraction, in order to combine the best of both worlds. Empirically it also appears that the network is faster to train than a traditional seq2seq attention system. \par
 	
+	\section{Sentiment Analysis / Opinion Mining}
+	
+	\paragraph{Opinion mining}(OM) is a field of research that uses Natural Language Processing in order to get information from a text that helps in extracting ideas and opinions and presenting the information in an efficient way\cite{pakistan}. In its earliest forms, it was used mostly in small texts such as reviews and tweets, where the opinion of the author is clearly stated, however in recent years it has started seeing more and more usage in large texts. 
+	
+	A similar field of research that according to some researchers is a subset of OM, and according to others is exactly the same thing as OM\cite{kaur}, is \textbf{Sentiment Analysis}(SA). Sentiment Analysis uses NLP approaches to determine the emotions behind a sentence or series of sentences. It has also mostly been used for small texts and reviews\cite{sergio}, however it can and most likely will be widely used in analyzing literature texts, for example to determine characters' emotional states throughout a book, which can in return help critics categorize these texts. \par
+	
+	OM/SA for literature texts is a field that is even nowadays largely unexplored, however it is clear that it can provide useful solutions to problems mentioned in 2.1.
+	
+	
+	\subsection{Challenges}
+	
+	Most of the techniques used in OM/SA use a bag of words known as "sentiment lexicon". These are words that are heavily weighed towards positive or negative emotions, for example words such as "good, bad, great, terrible etc."\cite{shelly}. This has been helpful for researchers on a baseline level but presents them with a few important problems such as:
+	
+	\begin{enumerate}
+		\item Sarcasm: As with text classification, sarcasm and non-literal use of such words creates a problem where the models falsely label a sentence because of these words appearing in it, without understanding their usage.
+		
+		\item Lack of sentiment lexicon words: In texts that use complicated vocabulary, we often find ourselves lacking these key words and most systems fail to classify the emotions behind these sentences correctly
+	\end{enumerate}
+
+	\subsection{Solutions}
+	
+	One of the earliest forms of sarcasm detection was the famous 6-tuple representation. Proposed by Ivanke and Pexman \cite{stacey} in 2003, it was a very important milestone in sarcasm identification in linguistics. They defined sarcasm consists of 6-tuples where: $S= Speaker, H= Listener C= Content, u= Utterance p= Literal proposition p’= Intended proposition$ This can be read as Speaker S generates an utterance u in Context C meaning proposition p but intending that hearer H understands p’. \par
+	
+	From as early as 2006\cite{tepperman}, researchers have been trying to find more efficient ways to detect sarcasm. Most have used social media sites such as Twitter to train their models\cite{dmitry}, paying special attention to the amount of hyperboles used in sarcastic sentences to aid them. In recent years, studies have been able to reach high accuracy in identifying sarcasm, for example a 2017 study on twitter sarcasm detection using Deep Convolutional Neural Networks\cite{shelly} is able to reach upwards of 90\% accuracy.
 	
 	\printbibliography
 	
